@@ -85,3 +85,9 @@ The app is deployed on **Streamlit Community Cloud** — a free hosting platform
 
 **Vignesh Pandiya G**
 AI/Full Stack Engineer
+
+# output
+<img width="1907" height="1020" alt="image" src="https://github.com/user-attachments/assets/a73b4762-2a66-43f7-8db6-20089e8ae638" />
+
+
+
