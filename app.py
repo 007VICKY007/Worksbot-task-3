@@ -5,7 +5,7 @@ from langchain_core.messages import HumanMessage, AIMessage
 from langchain_core.output_parsers import StrOutputParser
 
 # ── Page Config ──────────────────────────────────────────────
-st.set_page_config(page_title="AI Writing Assistant", page_icon="🤖", layout="centered")
+st.set_page_config(page_title="AI Writing Assistant", page_icon="A", layout="centered")
 
 # ── API Key ──────────────────────────────────────────────────
 def get_api_key():
@@ -23,7 +23,6 @@ st.markdown("""
 .stApp { font-family: 'Inter', sans-serif; }
 
 .app-header { text-align: center; padding: 1.2rem 0 0.5rem; }
-.app-header .icon { font-size: 2.5rem; }
 .app-header h1 {
     font-size: 1.7rem; font-weight: 700;
     background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899);
@@ -68,27 +67,25 @@ st.markdown("""
 # ── Header ───────────────────────────────────────────────────
 st.markdown("""
 <div class="app-header">
-    <div class="icon">🤖</div>
     <h1>AI Writing Assistant</h1>
-    <p class="tagline">Email Drafting & Text Summarization — powered by LangChain + GPT</p>
+    <p class="tagline">Email Drafting and Text Summarization — powered by LangChain + GPT</p>
 </div>
 """, unsafe_allow_html=True)
 
 # ── Sidebar ──────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("## 🤖 Settings")
+    st.markdown("## Settings")
     st.markdown("")
 
     if not api_key:
-        api_key = st.text_input("🔑 OpenAI API Key", type="password", placeholder="sk-...")
+        api_key = st.text_input("OpenAI API Key", type="password", placeholder="sk-...")
         st.markdown("")
 
-    # Mode selector
-    mode = st.radio("🔀 Mode", ["✉️ Email Drafting", "📝 Text Summarizer"], index=0)
+    mode = st.radio("Mode", ["Email Drafting", "Text Summarizer"], index=0)
 
     st.markdown("---")
 
-    if mode == "✉️ Email Drafting":
+    if mode == "Email Drafting":
         tone = st.selectbox("Tone", ["Professional", "Friendly", "Formal", "Casual", "Apologetic", "Urgent"])
         length = st.radio("Length", ["Short", "Medium", "Detailed"], index=1, horizontal=True)
     else:
@@ -101,33 +98,33 @@ with st.sidebar:
 
     col1, col2 = st.columns(2)
     with col1:
-        st.metric("✉️ Emails", total_emails)
+        st.metric("Emails", total_emails)
     with col2:
-        st.metric("📝 Summaries", total_summaries)
+        st.metric("Summaries", total_summaries)
 
     st.markdown("---")
-    if st.button("🗑️ Clear Chat", use_container_width=True):
+    if st.button("Clear Chat", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
 
     st.markdown("")
-    st.caption("Built by Vignesh · LangChain + GPT")
+    st.caption("Built by Vignesh | LangChain + GPT")
 
-# ── Tip Box (changes based on mode) ──────────────────────────
-if mode == "✉️ Email Drafting":
+# ── Tip Box ──────────────────────────────────────────────────
+if mode == "Email Drafting":
     st.markdown("""
     <div class="tip-box">
-        <strong>✉️ Email Drafting Mode</strong><br>
+        <strong>Email Drafting Mode</strong><br>
         Just type keywords or a short description:<br>
-        <em>sick leave</em> · <em>resignation</em> · <em>follow up client</em> · <em>thank you after interview</em> · <em>salary hike request</em> · <em>work from home</em> · <em>meeting reschedule</em>
+        <em>sick leave</em> | <em>resignation</em> | <em>follow up client</em> | <em>thank you after interview</em> | <em>salary hike request</em> | <em>work from home</em> | <em>meeting reschedule</em>
     </div>
     """, unsafe_allow_html=True)
 else:
     st.markdown("""
     <div class="tip-box-green">
-        <strong>📝 Text Summarizer Mode</strong><br>
+        <strong>Text Summarizer Mode</strong><br>
         Paste any text and get an instant summary:<br>
-        <em>Articles</em> · <em>Reports</em> · <em>Meeting notes</em> · <em>Research papers</em> · <em>Long emails</em> · <em>Blog posts</em> · <em>Documents</em>
+        <em>Articles</em> | <em>Reports</em> | <em>Meeting notes</em> | <em>Research papers</em> | <em>Long emails</em> | <em>Blog posts</em> | <em>Documents</em>
     </div>
     """, unsafe_allow_html=True)
 
@@ -138,23 +135,33 @@ EMAIL_PROMPT = ChatPromptTemplate.from_messages([
 
 INTENT DETECTION:
 When a user types anything, ask yourself: "Could this be a topic for an email?"
-- If YES (even loosely) → Draft the email immediately. Never ask for clarification.
-- If NO (clearly unrelated like math, code, jokes, general knowledge) → Reply:
-  "✉️ I'm your email drafting assistant! Please type a topic or keywords and I'll draft a professional email for you."
+- If YES (even loosely) then draft the email immediately. Never ask for clarification.
+- If NO (clearly unrelated like math, code, jokes, general knowledge) then reply:
+  "I can only help with email drafting. Please type a topic or keywords and I will draft a professional email for you."
 
 RULES:
-- Even 1-2 word inputs like "sick leave", "resignation", "apology" are VALID — draft immediately.
-- NEVER ask "do you want me to write an email?" — just write it.
+- Even 1-2 word inputs like "sick leave", "resignation", "apology" are VALID email topics. Draft immediately.
+- NEVER ask "do you want me to write an email?" Just write it.
 - If keywords are vague, use your best judgment to fill in reasonable details.
 - When in doubt, ALWAYS draft the email.
 
-EMAIL FORMAT (clean plain text only, no markdown ** or ##):
+HUMANIZED WRITING RULES:
+- Write like a real human being, not a robot. Use natural, conversational phrasing.
+- Avoid stiff, robotic phrases like "I hope this message finds you well", "Please be informed that", "I am writing to inform you", "Kindly be advised", "I wish to bring to your notice".
+- Instead use natural openers like "I wanted to reach out about...", "I am writing regarding...", "Just a quick note about...", "I wanted to let you know that...".
+- Vary sentence length. Mix short and longer sentences naturally.
+- Use contractions where appropriate (I am, I will, I have are fine for formal; I'm, I'll, I've for casual/friendly).
+- The email should sound like something a real person would actually write, not a template.
+- No filler phrases. Get to the point while remaining polite.
+- No emojis anywhere in the email.
+
+EMAIL FORMAT (clean plain text only):
 
 Subject: <clear subject line>
 
 Dear <appropriate recipient>,
 
-<email body — clean left-aligned paragraphs>
+<email body — natural, human-sounding paragraphs>
 
 <closing>,
 [Your Name]
@@ -162,7 +169,7 @@ Dear <appropriate recipient>,
 Tone: {tone}
 Length: {length} (Short = 3-5 sentences, Medium = 5-8, Detailed = 8-12)
 
-Output clean plain text only. No bold, no headers, no bullets in the email body."""),
+Output clean plain text only. No bold markers, no heading markers, no bullet points, no emojis."""),
     MessagesPlaceholder(variable_name="chat_history"),
     ("human", "{input}")
 ])
@@ -172,16 +179,26 @@ SUMMARY_PROMPT = ChatPromptTemplate.from_messages([
 
 INTENT DETECTION:
 When a user types anything, ask yourself: "Is this text that needs summarizing?"
-- If the input is a paragraph or more of text → Summarize it immediately.
-- If the input is a short phrase like "summarize this" with no text → Reply:
-  "📝 Please paste the text you'd like me to summarize!"
-- If the input is clearly unrelated (math, code requests, general questions) → Reply:
-  "📝 I'm your text summarizer! Paste any text — article, report, email, notes — and I'll summarize it for you."
-- If the user pastes text AND gives instructions (like "summarize this email") → Summarize the text.
+- If the input is a paragraph or more of text then summarize it immediately.
+- If the input is a short phrase like "summarize this" with no text then reply:
+  "Please paste the text you would like me to summarize."
+- If the input is clearly unrelated (math, code requests, general questions) then reply:
+  "I can only help with text summarization. Paste any text — article, report, email, notes — and I will summarize it for you."
+- If the user pastes text AND gives instructions (like "summarize this email") then summarize the text.
+
+HUMANIZED WRITING RULES:
+- Write summaries in natural, flowing language. Not robotic or mechanical.
+- Avoid starting with "The text discusses..." or "This article is about..." or "The author states...".
+- Instead, dive directly into the content. State the key points as if you are explaining it to a colleague.
+- Use clear, plain language. No jargon unless the original text uses it.
+- Vary sentence structure. Do not start every sentence the same way.
+- No emojis anywhere in the summary.
+- No filler phrases like "It is important to note that" or "It should be mentioned that".
+- Make the summary feel like a human wrote it after reading the original, not like a machine extracted keywords.
 
 SUMMARY STYLE: {summary_style}
 - Brief = A concise paragraph capturing the main points
-- Bullet Points = Key points as clean bullet points
+- Bullet Points = Key points as clean bullet points using dashes (-)
 - Detailed = Comprehensive summary with all important details
 - One-Line = Single sentence capturing the essence
 - ELI5 (Simple) = Explain in very simple everyday language
@@ -192,11 +209,11 @@ LENGTH: {summary_length}
 - Long = 7-12 sentences or 8-12 bullets
 
 OUTPUT RULES:
-- Start directly with the summary. No preamble like "Here's the summary".
-- Use clean plain text. No markdown ** or ##.
+- Start directly with the summary. No preamble like "Here is the summary".
+- Use clean plain text. No bold markers, no heading markers.
 - For Bullet Points style, use simple dashes (-) not fancy bullets.
 - Preserve important names, dates, numbers, and key terms from the original.
-- If the text is very short (1-2 sentences), tell the user it's already concise."""),
+- If the text is very short (1-2 sentences), tell the user it is already concise."""),
     MessagesPlaceholder(variable_name="chat_history"),
     ("human", "{input}")
 ])
@@ -206,7 +223,7 @@ def get_chain(chain_type):
     llm = ChatOpenAI(
         model="gpt-4o-mini",
         api_key=api_key,
-        temperature=0.7,
+        temperature=0.8,
         max_tokens=1024,
     )
     parser = StrOutputParser()
@@ -233,12 +250,12 @@ if "messages" not in st.session_state:
 # ── Render Chat History ──────────────────────────────────────
 for msg in st.session_state.messages:
     if msg["role"] == "user":
-        with st.chat_message("user", avatar="🧑‍💻"):
+        with st.chat_message("user", avatar=None):
             st.markdown(msg["content"])
     else:
         badge_class = "mode-email" if msg.get("type") == "email" else "mode-summary"
-        badge_text = "✉️ Email Draft" if msg.get("type") == "email" else "📝 Summary"
-        with st.chat_message("assistant", avatar="🤖"):
+        badge_text = "Email Draft" if msg.get("type") == "email" else "Summary"
+        with st.chat_message("assistant", avatar=None):
             st.markdown(
                 f'<span class="mode-badge {badge_class}">{badge_text}</span>'
                 f'<div class="output-block">{msg["content"]}</div>',
@@ -246,24 +263,23 @@ for msg in st.session_state.messages:
             )
 
 # ── Chat Input ───────────────────────────────────────────────
-current_mode = "email" if mode == "✉️ Email Drafting" else "summary"
+current_mode = "email" if mode == "Email Drafting" else "summary"
 placeholder = (
-    "Type keywords… e.g. 'sick leave' or 'follow up client'"
+    "Type keywords, e.g. sick leave, follow up client..."
     if current_mode == "email"
-    else "Paste your text here to summarize…"
+    else "Paste your text here to summarize..."
 )
 
 if prompt := st.chat_input(placeholder):
 
     if not api_key:
-        st.error("⚠️ Please enter your OpenAI API Key in the sidebar to get started.")
+        st.error("Please enter your OpenAI API Key in the sidebar to get started.")
         st.stop()
 
     st.session_state.messages.append({"role": "user", "content": prompt, "type": current_mode})
-    with st.chat_message("user", avatar="🧑‍💻"):
+    with st.chat_message("user", avatar=None):
         st.markdown(prompt)
 
-    # Build LangChain inputs
     chat_history = get_langchain_history()
 
     if current_mode == "email":
@@ -274,9 +290,9 @@ if prompt := st.chat_input(placeholder):
             "tone": tone,
             "length": length,
         }
-        spinner_text = "✍️ Drafting your email..."
+        spinner_text = "Drafting your email..."
         badge_class = "mode-email"
-        badge_text = "✉️ Email Draft"
+        badge_text = "Email Draft"
         file_name = "email_draft.txt"
     else:
         chain = get_chain("summary")
@@ -286,12 +302,12 @@ if prompt := st.chat_input(placeholder):
             "summary_style": summary_style,
             "summary_length": summary_length,
         }
-        spinner_text = "📝 Summarizing your text..."
+        spinner_text = "Summarizing your text..."
         badge_class = "mode-summary"
-        badge_text = "📝 Summary"
+        badge_text = "Summary"
         file_name = "summary.txt"
 
-    with st.chat_message("assistant", avatar="🤖"):
+    with st.chat_message("assistant", avatar=None):
         with st.spinner(spinner_text):
             try:
                 reply = chain.invoke(invoke_input)
@@ -306,7 +322,7 @@ if prompt := st.chat_input(placeholder):
                 col1, col2 = st.columns([3, 1])
                 with col2:
                     st.download_button(
-                        "📋 Save as TXT",
+                        "Save as TXT",
                         data=reply,
                         file_name=file_name,
                         mime="text/plain",
@@ -316,10 +332,10 @@ if prompt := st.chat_input(placeholder):
             except Exception as e:
                 err = str(e).lower()
                 if "auth" in err or "api key" in err or "invalid" in err or "incorrect" in err:
-                    st.error("❌ API key is invalid or expired. Get a new key from platform.openai.com/api-keys")
+                    st.error("API key is invalid or expired. Get a new key from platform.openai.com/api-keys")
                 elif "rate" in err or "limit" in err:
-                    st.warning("⏳ Too many requests. Please wait a moment and try again.")
+                    st.warning("Too many requests. Please wait a moment and try again.")
                 elif "quota" in err or "billing" in err or "insufficient" in err:
-                    st.error("❌ OpenAI quota exceeded. Add credits at platform.openai.com/settings/organization/billing")
+                    st.error("OpenAI quota exceeded. Add credits at platform.openai.com/settings/organization/billing")
                 else:
-                    st.error("❌ Something went wrong. Please try again.")
+                    st.error("Something went wrong. Please try again.")
