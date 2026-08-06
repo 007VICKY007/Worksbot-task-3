@@ -1,11 +1,18 @@
 import streamlit as st
 from openai import OpenAI
 
-# ── Config ───────────────────────────────────────────────────
-OPENAI_API_KEY = "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"
-MODEL = "gpt-4o-mini"
-
+# ── Page Config ──────────────────────────────────────────────
 st.set_page_config(page_title="Email Draft AI", page_icon="✉️", layout="centered")
+
+# ── API Key (secrets for cloud, fallback to sidebar) ─────────
+def get_api_key():
+    try:
+        return st.secrets["OPENAI_API_KEY"]
+    except Exception:
+        return None
+
+api_key = get_api_key()
+MODEL = "gpt-4o-mini"
 
 # ── CSS ──────────────────────────────────────────────────────
 st.markdown("""
@@ -39,9 +46,6 @@ st.markdown("""
     white-space: pre-wrap; word-wrap: break-word;
     box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
-
-.stat-num { font-size: 1.3rem; font-weight: 700; color: #4f46e5; }
-.stat-label { font-size: 0.75rem; color: #6b7280; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -54,10 +58,14 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Sidebar (clean, user-friendly) ───────────────────────────
+# ── Sidebar ──────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("## ✉️ Email Settings")
     st.markdown("")
+
+    if not api_key:
+        api_key = st.text_input("🔑 OpenAI API Key", type="password", placeholder="sk-...")
+        st.markdown("")
 
     tone = st.selectbox("Tone", ["Professional", "Friendly", "Formal", "Casual", "Apologetic", "Urgent"])
     length = st.radio("Length", ["Short", "Medium", "Detailed"], index=1, horizontal=True)
@@ -131,6 +139,10 @@ for msg in st.session_state.messages:
 # ── Chat Input ───────────────────────────────────────────────
 if prompt := st.chat_input("Type keywords… e.g. 'sick leave' or 'follow up client'"):
 
+    if not api_key:
+        st.error("⚠️ Please enter your OpenAI API Key in the sidebar to get started.")
+        st.stop()
+
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar="🧑‍💻"):
         st.markdown(prompt)
@@ -144,7 +156,7 @@ if prompt := st.chat_input("Type keywords… e.g. 'sick leave' or 'follow up cli
     with st.chat_message("assistant", avatar="✉️"):
         with st.spinner("✍️ Drafting your email..."):
             try:
-                client = OpenAI(api_key=OPENAI_API_KEY)
+                client = OpenAI(api_key=api_key)
                 response = client.chat.completions.create(
                     model=MODEL,
                     messages=api_messages,
@@ -169,10 +181,10 @@ if prompt := st.chat_input("Type keywords… e.g. 'sick leave' or 'follow up cli
             except Exception as e:
                 err = str(e).lower()
                 if "auth" in err or "api key" in err or "invalid" in err or "incorrect" in err:
-                    st.error("❌ Unable to connect. Please contact the administrator.")
+                    st.error("❌ API key is invalid or expired. Please get a new key from platform.openai.com/api-keys")
                 elif "rate" in err or "limit" in err:
                     st.warning("⏳ Too many requests. Please wait a moment and try again.")
-                elif "quota" in err or "billing" in err:
-                    st.error("❌ Service temporarily unavailable. Please try again later.")
+                elif "quota" in err or "billing" in err or "insufficient" in err:
+                    st.error("❌ OpenAI quota exceeded. Add credits at platform.openai.com/settings/organization/billing")
                 else:
                     st.error(f"❌ Something went wrong. Please try again.")
