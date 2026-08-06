@@ -1,51 +1,68 @@
-# ✉️ Email Draft AI
+# 🤖 AI Writing Assistant
 
-An AI-powered chatbot that instantly generates professional email drafts from simple keywords or short descriptions.
+An AI-powered writing tool that provides two core features — **Email Drafting** and **Text Summarization** — in a simple chat interface.
+
+Built with LangChain, OpenAI GPT, and Streamlit.
 
 ---
 
 ## What It Does
 
-Users type a few keywords — like **"sick leave"** or **"follow up client"** — and the tool instantly generates a complete, well-formatted professional email ready to copy and send.
+### ✉️ Email Drafting
+Users type a few keywords — like "sick leave" or "follow up client" — and the AI instantly generates a complete professional email ready to copy and send.
 
-The AI understands user intent automatically. There's no need to write full sentences or follow a specific format. Even one or two words are enough.
-
----
-
-## Example Usage
-
-| User Types | What They Get |
-|---|---|
-| `sick leave` | A complete sick leave email addressed to their manager |
-| `resignation` | A professional resignation letter |
-| `follow up client invoice` | A polite follow-up email about a pending invoice |
-| `thank you after interview` | A post-interview thank-you note |
-| `apology late delivery` | An apologetic email about a delayed project |
-| `meeting reschedule tomorrow 3pm` | A meeting reschedule request |
-| `work from home request` | A WFH request email |
-| `salary hike` | A salary increment request to HR |
-
----
-
-## Key Features
-
-- **Smart Intent Detection** — understands what the user wants even from 1-2 keywords, no exact phrasing needed
-- **Tone Control** — users can choose Professional, Friendly, Formal, Casual, Apologetic, or Urgent
-- **Length Control** — Short (3-5 lines), Medium (5-8 lines), or Detailed (8-12 lines)
-- **Download Option** — every draft can be saved as a `.txt` file with one click
-- **Chat Interface** — simple conversational UI, no training required
-- **Email-Only Mode** — the tool only generates emails and politely declines unrelated requests
+### 📝 Text Summarizer
+Users paste any long text — articles, reports, meeting notes, documents — and the AI produces a clean, concise summary in seconds.
 
 ---
 
 ## How It Works
 
 1. User opens the web app
-2. Types keywords or a short description in the chat box
-3. AI generates a complete email draft in seconds
-4. User copies or downloads the draft
+2. Selects mode — Email Drafting or Text Summarizer
+3. Types keywords (for email) or pastes text (for summary)
+4. AI generates the output instantly
+5. User copies or downloads the result as a .txt file
 
-No login required. No complex forms. Just type and get the email.
+No login required. No complex forms. Just type and get results.
+
+---
+
+## Example Usage
+
+### Email Drafting
+
+| User Types | Output |
+|---|---|
+| sick leave | Complete sick leave email to manager |
+| resignation | Professional resignation letter |
+| follow up client invoice | Polite invoice follow-up email |
+| thank you after interview | Post-interview thank-you note |
+| meeting reschedule | Meeting reschedule request |
+| work from home | WFH request email |
+
+### Text Summarizer
+
+| User Pastes | Output |
+|---|---|
+| A long news article | Brief summary of key points |
+| Meeting notes (2 pages) | Concise bullet-point summary |
+| Research paper abstract | Simplified one-line summary |
+| Long email thread | Quick summary of decisions made |
+
+---
+
+## Features
+
+- **Two Modes** — switch between Email Drafting and Text Summarizer instantly
+- **Smart Intent Detection** — understands what the user wants from just 1-2 keywords
+- **Tone Control** (Email) — Professional, Friendly, Formal, Casual, Apologetic, Urgent
+- **Summary Styles** (Summarizer) — Brief, Bullet Points, Detailed, One-Line, ELI5 (Simple)
+- **Length Control** — Short, Medium, or Detailed/Long
+- **Download Option** — save any output as a .txt file
+- **Session Stats** — tracks emails drafted and texts summarized
+- **Chat Memory** — remembers conversation context within a session
+- **LangChain Powered** — uses LangChain prompt templates, chains, and output parsers
 
 ---
 
@@ -53,41 +70,37 @@ No login required. No complex forms. Just type and get the email.
 
 | Component | Technology |
 |---|---|
-| Frontend & Hosting | Streamlit (Python) |
-| AI Model | OpenAI GPT-4o-mini |
+| AI Framework | LangChain |
+| Language Model | OpenAI GPT-4o-mini |
+| Frontend | Streamlit (Python) |
 | Deployment | Streamlit Community Cloud (free) |
 
 ---
 
 ## Deployment
 
-The app is deployed on **Streamlit Community Cloud** — a free hosting platform. It runs 24/7 and is accessible via a web link from any browser on desktop or mobile.
+The app is deployed on **Streamlit Community Cloud** — a free hosting platform that runs 24/7 and is accessible via a web link from any browser.
 
-### Files Required
+### Files in This Project
 
 | File | Purpose |
 |---|---|
 | `app.py` | Main application code |
-| `requirements.txt` | Python dependencies (streamlit, openai) |
+| `requirements.txt` | Python dependencies |
 | `.streamlit/config.toml` | UI theme configuration |
+| `README.md` | This documentation |
 
----
+### Steps to Deploy
 
-## Use Cases
-
-- Employees drafting leave applications, follow-ups, or formal requests
-- Teams that need quick email templates without searching online
-- Anyone who struggles with email writing and wants a professional draft in seconds
+1. Push code to a GitHub repository (private recommended)
+2. Go to share.streamlit.io → sign in with GitHub
+3. Click "New app" → select the repository → set main file as `app.py`
+4. Add the OpenAI API key in Settings → Secrets
+5. Click Deploy
 
 ---
 
 ## Developed By
 
 **Vignesh Pandiya G**
-AI/Full Stack Engineer
-
-# output
-<img width="1907" height="1020" alt="image" src="https://github.com/user-attachments/assets/a73b4762-2a66-43f7-8db6-20089e8ae638" />
-
-
-
+AI / Full Stack Engineer
